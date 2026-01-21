@@ -1,0 +1,273 @@
+"use client"
+
+import { useCallback, useEffect, useState } from "react"
+import { Particles } from "@tsparticles/react"
+import { type Container, type Engine } from "@tsparticles/e      <Particles
+        id={particlesId}
+        init={particlesInit}
+        loaded={particlesLoaded}
+        options={{
+          fullScreen: false,
+          background: {
+            color: {
+              value: colors.background,
+            },
+          },
+          fpsLimit: 60,ort { loadSlim } from "@tsparticles/slim"
+import { useIsMobile } from "@/hooks/use-mobile"
+import { 
+  detectPageBackgroundType, 
+  forceParticlesRedraw,
+  getAdaptiveColors,
+  getParticleNumber,
+  getParticleSpeed,
+  getParticleSize,
+  getLinkWidth,
+  type PageBackground as PageBackgroundType,
+  type ParticleTheme
+} from "@/lib/particle-utils"
+
+// Use the imported types
+type PageBackground = PageBackgroundType;
+type Theme = ParticleTheme;
+
+interface ParticlesBackgroundProps {
+  className?: string;
+  theme?: Theme;
+  mobileTheme?: Theme;
+  density?: 'low' | 'medium' | 'high';
+  mobileDensity?: 'low' | 'medium' | 'high';
+  speed?: 'slow' | 'medium' | 'fast';
+  mobileSpeed?: 'slow' | 'medium' | 'fast';
+  desktopOpacity?: number;
+  mobileOpacity?: number;
+  disableOnSmallScreens?: boolean;
+  pageBackground?: PageBackground;
+  zIndex?: number;
+}
+
+export const ParticlesBackground = ({
+  className = "",
+  theme = "emerald",
+  mobileTheme,
+  density = 'medium',
+  mobileDensity,
+  speed = 'medium',
+  mobileSpeed,
+  desktopOpacity = 0.4,
+  mobileOpacity = 0.3,
+  disableOnSmallScreens = true,
+  pageBackground,
+  zIndex = 1, // Changed from -10 to 1 for better visibility
+}: ParticlesBackgroundProps) => {
+  const [mounted, setMounted] = useState(false)
+  const isMobile = useIsMobile()
+  const [windowWidth, setWindowWidth] = useState(0)
+  const [particlesContainer, setParticlesContainer] = useState<Container | undefined>(undefined)
+  
+  // Initialize on client-side only
+  useEffect(() => {
+    setMounted(true)
+    
+    // Add a debug message
+    console.log("ParticlesBackground: Component mounted")
+    
+    // Set initial window width
+    const checkWindowSize = () => {
+      const width = window.innerWidth
+      setWindowWidth(width)
+    }
+    
+    // Check size on mount
+    checkWindowSize()
+    
+    // Add resize listener
+    window.addEventListener('resize', checkWindowSize)
+    
+    return () => {
+      window.removeEventListener('resize', checkWindowSize)
+    }
+  }, [])
+  
+  // Auto-detect page background type if not explicitly provided
+  const [detectedBackground, setDetectedBackground] = useState<PageBackground | undefined>(undefined)
+  
+  useEffect(() => {
+    if (mounted && !pageBackground) {
+      // Use the utility function from particle-utils.ts
+      const detected = detectPageBackgroundType();
+      setDetectedBackground(detected);
+      console.log("Auto-detected page background:", detected);
+    }
+  }, [mounted, pageBackground]);
+
+  const particlesInit = useCallback(async (engine: Engine) => {
+    await loadSlim(engine)
+  }, [])
+
+  const particlesLoaded = useCallback(async (container: Container | undefined) => {
+    if (container) {
+      setParticlesContainer(container);
+      
+      // Force a redraw after a short delay to ensure proper sizing
+      setTimeout(() => {
+        forceParticlesRedraw(container);
+        console.log("Particles loaded and redrawn");
+      }, 300);
+    }
+  }, []);
+
+  // Get the effective theme, density and speed based on device
+  const effectiveTheme = isMobile && mobileTheme ? mobileTheme : theme
+  const effectiveDensity = isMobile && mobileDensity ? mobileDensity : density
+  const effectiveSpeed = isMobile && mobileSpeed ? mobileSpeed : speed
+  const effectiveOpacity = isMobile ? mobileOpacity : desktopOpacity
+  const effectiveBackground = pageBackground || detectedBackground
+
+  // Initialize tsParticles engine
+  useEffect(() => {
+    if (mounted) {
+      const initParticles = async () => {
+        try {
+          const tsParticles = await import("@tsparticles/engine").then(m => m.tsParticles)
+          await loadSlim(tsParticles)
+          console.log("tsParticles initialized successfully")
+        } catch (error) {
+          console.error("Failed to initialize tsParticles:", error)
+        }
+      }
+      
+      initParticles()
+    }
+  }, [mounted])
+
+  // Force redraw when configuration changes
+  useEffect(() => {
+    if (mounted && particlesContainer) {
+      // Small delay to let changes take effect
+      const timer = setTimeout(() => {
+        forceParticlesRedraw(particlesContainer)
+      }, 200)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [mounted, particlesContainer, isMobile, effectiveTheme, pageBackground, detectedBackground])
+
+  // Log configuration for debugging
+  useEffect(() => {
+    if (mounted) {
+      console.log('Particles config:', {
+        isMobile,
+        theme: effectiveTheme,
+        density: effectiveDensity,
+        speed: effectiveSpeed,
+        opacity: effectiveOpacity,
+        pageBackground,
+        detectedBackground,
+        effectiveBackground
+      })
+    }
+  }, [mounted, isMobile, effectiveTheme, effectiveDensity, effectiveSpeed, effectiveOpacity, 
+      pageBackground, detectedBackground, effectiveBackground])
+
+  // Get colors using our utility
+  const colors = getAdaptiveColors({
+    theme: effectiveTheme,
+    density: effectiveDensity,
+    speed: effectiveSpeed,
+    opacity: effectiveOpacity,
+    pageBackground: effectiveBackground,
+    isMobile
+  });
+
+  // Return null if not mounted or if screen is too small and disableOnSmallScreens is true
+  if (!mounted || (disableOnSmallScreens && windowWidth < 375)) return null
+
+  return (
+    <div className={`fixed inset-0 pointer-events-none ${className}`} style={{ zIndex }}>
+      <Particles
+        id="tsparticles"
+        options={{
+          fullScreen: false,
+          background: {
+            color: {
+              value: colors.background,
+            },
+          },
+          fpsLimit: 60,
+          interactivity: {
+            events: {
+              onClick: {
+                enable: true,
+                mode: "push",
+              },
+              onHover: {
+                enable: true,
+                mode: "repulse",
+              },
+              resize: {
+                enable: true,
+              },
+            },
+            modes: {
+              push: {
+                quantity: isMobile ? 2 : 4, // Reduce push quantity on mobile
+              },
+              repulse: {
+                distance: isMobile ? 100 : 150, // Reduce repulse distance on mobile
+                duration: 0.4,
+              },
+            },
+          },
+          particles: {
+            color: {
+              value: colors.particles,
+            },
+            links: {
+              color: colors.links,
+              distance: isMobile ? 120 : 150, // Slightly shorter links on mobile
+              enable: true,
+              opacity: effectiveOpacity + 0.1, // Links are slightly more opaque than particles
+              width: getLinkWidth(isMobile, effectiveBackground),
+            },
+            collisions: {
+              enable: true,
+            },
+            move: {
+              direction: "none",
+              enable: true,
+              outModes: {
+                default: "bounce",
+              },
+              random: false,
+              speed: getParticleSpeed(effectiveSpeed, isMobile),
+              straight: false,
+            },
+            number: {
+              density: {
+                enable: true,
+              },
+              value: getParticleNumber(effectiveDensity, isMobile),
+            },
+            opacity: {
+              value: effectiveOpacity,
+            },
+            shape: {
+              type: ["circle", "triangle"],
+            },
+            size: {
+              value: getParticleSize(isMobile, effectiveBackground),
+            },
+          },
+          detectRetina: true,
+        }}
+        className="h-full w-full"
+        init={particlesInit}
+        loaded={particlesLoaded}
+      />
+    </div>
+  )
+}
+
+// Use the same export for both named and default exports
+export default ParticlesBackground

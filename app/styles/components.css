@@ -1,0 +1,57 @@
+/* Custom component variables */
+:root {
+  --feature-icon-size: 2.5rem;    /* 40px - matches h-10/w-10 */
+  --feature-icon-inner: 1.5rem;   /* 24px - matches h-6/w-6 */
+  --feature-radius: 0.5rem;       /* 8px - matches rounded-lg */
+}
+
+/* Hero section shape */
+.hero-gradient-shape {
+  clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%);
+}
+
+/* Feature section components */
+.feature-icon-wrapper {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-icon {
+  height: var(--feature-icon-size);
+  width: var(--feature-icon-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--feature-radius);
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  transition: background-color 0.2s ease;
+}
+
+.feature-icon-svg {
+  height: var(--feature-icon-inner);
+  width: var(--feature-icon-inner);
+}
+
+/* Dark mode adjustments */
+:root[class~="dark"] .feature-icon {
+  background-color: hsl(var(--primary));
+}
+
+/* RTL support */
+[dir="rtl"] .feature-icon-wrapper {
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  :root {
+    --feature-icon-size: 2rem;     /* 32px */
+    --feature-icon-inner: 1.25rem; /* 20px */
+  }
+}

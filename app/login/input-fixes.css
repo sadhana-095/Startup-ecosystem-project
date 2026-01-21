@@ -1,0 +1,50 @@
+/* Additional styles to fix z-index issues */
+.form-container {
+  position: relative;
+  z-index: 20;
+}
+
+.input-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+.login-input {
+  position: relative;
+  z-index: 10;
+  background-color: white !important;
+  color: #333 !important;
+  opacity: 1 !important;
+  border: 1px solid #d1d5db !important;
+}
+
+.login-input::placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+}
+
+.input-icon {
+  z-index: 11;
+  pointer-events: none;
+}
+
+.password-toggle {
+  position: absolute;
+  z-index: 20;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6b7280;
+}
+
+/* Ensure all form elements are above background elements */
+.form-card {
+  position: relative;
+  z-index: 10;
+}
+
+/* Ensure particles don't block inputs */
+.particles-container {
+  z-index: -1 !important;
+}

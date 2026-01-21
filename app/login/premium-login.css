@@ -1,0 +1,181 @@
+/* Premium input field styles */
+.login-field {
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure input text is visible */
+input[type="email"], 
+input[type="password"], 
+input[type="text"] {
+  color: #333 !important;
+  background-color: white !important;
+  opacity: 1 !important;
+}
+
+/* Ensure placeholder text is visible */
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+input[type="text"]::placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+}
+
+.login-field:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -3px rgba(16, 185, 129, 0.15), 0 4px 6px -2px rgba(16, 185, 129, 0.1);
+}
+
+/* Input highlight effect on focus */
+.login-field:focus-within::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 10%;
+  width: 80%;
+  height: 6px;
+  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.2), transparent);
+  border-radius: 50%;
+  filter: blur(4px);
+  z-index: -1;
+  opacity: 0.7;
+}
+
+/* Floating effect animation */
+.floating {
+  animation: floating 6s ease-in-out infinite;
+}
+
+.floating-slow {
+  animation: floating 8s ease-in-out infinite;
+}
+
+.floating-slower {
+  animation: floating 10s ease-in-out infinite;
+}
+
+@keyframes floating {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Gradient animation */
+.animated-gradient {
+  background-size: 400% 400%;
+  animation: gradient 15s ease-in-out infinite;
+}
+
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Glow effect */
+.glow-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(45deg, rgba(16, 185, 129, 0) 0%, rgba(16, 185, 129, 0.2) 50%, rgba(16, 185, 129, 0) 100%);
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0.6s;
+}
+
+.glow-effect:hover::after {
+  opacity: 1;
+}
+
+/* Shimmer effect */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 2s infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 150%;
+  }
+}
+
+/* Spotlight effect */
+.spotlight {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(16, 185, 129, 0.05) 0%,
+    rgba(16, 185, 129, 0) 70%
+  );
+  opacity: 0.8;
+  z-index: 1;
+  animation: pulse-light 8s ease-in-out infinite;
+}
+
+/* Fix for form inputs */
+.form-container {
+  position: relative;
+  z-index: 20;
+}
+
+.input-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+.login-input {
+  position: relative;
+  z-index: 10;
+}
+
+.password-toggle {
+  position: absolute;
+  z-index: 20;
+}
+
+@keyframes pulse-light {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}

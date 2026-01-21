@@ -1,0 +1,66 @@
+/* Reset styles for input visibility issues */
+
+/* Basic resets for all form elements */
+input, textarea, select, button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+/* Force text inputs to have proper text color and visible text */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+.visible-input {
+  color: #333 !important;
+  -webkit-text-fill-color: #333 !important;
+  opacity: 1 !important;
+  background-color: white !important;
+  border: 1px solid #d1d5db !important;
+  visibility: visible !important;
+}
+
+/* Make sure placeholders are visible */
+input::placeholder {
+  color: #9ca3af !important;
+  -webkit-text-fill-color: #9ca3af !important;
+  opacity: 0.7 !important;
+}
+
+/* Force autofill inputs to have proper colors */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  -webkit-text-fill-color: #333 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Add focus styles */
+input:focus {
+  outline: 2px solid rgba(16, 185, 129, 0.5) !important;
+  outline-offset: 2px !important;
+  border-color: rgba(16, 185, 129, 0.5) !important;
+}
+
+/* Ensure proper z-indexing */
+.form-container {
+  position: relative;
+  z-index: 20;
+}
+
+.input-wrapper {
+  position: relative;
+  z-index: 10;
+}
+
+/* Force container background to be opaque */
+.form-card {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
